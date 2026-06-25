@@ -1,4 +1,4 @@
-# iMessage Chat Builder
+# iMessage Chat Builder for Figma
 
 [![CI](https://github.com/pdugan20/figma-imessage-chat-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/pdugan20/figma-imessage-chat-builder/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/pdugan20/figma-imessage-chat-builder?logo=github&logoColor=white)](https://github.com/pdugan20/figma-imessage-chat-builder/releases/latest)
