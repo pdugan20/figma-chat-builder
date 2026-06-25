@@ -1,7 +1,7 @@
-# iMessage Chat Builder for Figma
+# Chat Builder Figma Plugin
 
-[![CI](https://github.com/pdugan20/figma-imessage-chat-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/pdugan20/figma-imessage-chat-builder/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/pdugan20/figma-imessage-chat-builder?logo=github&logoColor=white)](https://github.com/pdugan20/figma-imessage-chat-builder/releases/latest)
+[![CI](https://github.com/pdugan20/figma-chat-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/pdugan20/figma-chat-builder/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/pdugan20/figma-chat-builder?logo=github&logoColor=white)](https://github.com/pdugan20/figma-chat-builder/releases/latest)
 [![Figma Plugin](https://img.shields.io/badge/Figma-Community-F24E1E?logo=figma&logoColor=white)](https://www.figma.com/community/plugin/1519731262843198057/imessage-ai-chat-builder)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
@@ -18,8 +18,8 @@ A Figma plugin that generates realistic iMessage chat interfaces using Claude. S
 ## Getting Started
 
 ```bash
-git clone https://github.com/pdugan20/figma-imessage-chat-builder.git
-cd figma-imessage-chat-builder
+git clone https://github.com/pdugan20/figma-chat-builder.git
+cd figma-chat-builder
 npm install
 npm run build
 ```
