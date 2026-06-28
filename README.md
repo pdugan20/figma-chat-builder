@@ -37,13 +37,6 @@ npm test              # Run tests
 npm run test:ci       # Tests with coverage (CI mode)
 ```
 
-## Tech Stack
-
-- **Build**: Webpack 5
-- **API**: Anthropic Claude API (Haiku 4.5)
-- **Testing**: Jest 30, React Testing Library
-- **Quality**: ESLint 9, Prettier, markdownlint, Conventional Commits
-
 ## Documentation
 
 - [End-to-End Flow](docs/architecture/end-to-end-flow.md) - Technical walkthrough of user inputs to Figma components
