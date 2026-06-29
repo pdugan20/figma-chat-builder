@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, IgnorePlugin } = require('webpack');
 
 const paths = require('./paths.js');
 
@@ -42,6 +42,13 @@ module.exports = (env, argv) => ({
   },
   plugins: [
     new CleanWebpackPlugin(),
+    // The @anthropic-ai/sdk pulls in Node-only code that this Figma plugin never
+    // runs: the worker `agent-toolset` (bash/fs/edit tools) and lazy `node:fs`/
+    // `node:path` credential-file helpers. Both are reached only via dynamic
+    // imports behind unused code paths (the plugin just streams the messages API
+    // with a direct apiKey), so ignoring them stops webpack from following those
+    // imports into `node:` builtins it can't resolve for the browser sandbox.
+    new IgnorePlugin({ resourceRegExp: /agent-toolset|^node:/ }),
     new CaseSensitivePathsPlugin(),
     new ForkTsCheckerWebpackPlugin(),
     new DefinePlugin({
