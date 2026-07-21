@@ -1,4 +1,11 @@
+import { TextDecoder, TextEncoder } from 'node:util';
+
 import '@testing-library/jest-dom';
+
+// jsdom omits TextEncoder/TextDecoder, which @anthropic-ai/sdk constructs at
+// import time (lib/middleware.ts), so importing it blows up without these.
+(globalThis as any).TextEncoder ??= TextEncoder;
+(globalThis as any).TextDecoder ??= TextDecoder;
 
 // Extend global window interface
 declare global {
