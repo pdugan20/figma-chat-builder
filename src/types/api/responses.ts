@@ -1,4 +1,4 @@
-export interface ContentBlock {
+interface ContentBlock {
   type: string;
   text?: string;
 }
