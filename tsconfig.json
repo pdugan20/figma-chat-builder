@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["plugin-typings", "jest"],
-    "typeRoots": ["./node_modules/@types", "./node_modules/@figma", "src/@types"],
+    "types": ["@figma/plugin-typings", "jest"],
     "jsx": "react-jsx",
     "module": "esnext",
     "esModuleInterop": true,

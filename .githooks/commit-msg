@@ -10,7 +10,7 @@ fi
 
 echo "[COMMIT-MSG] Validating commit message format..."
 
-npx commitlint --edit "$1" || {
+npm run lint:commit -- --edit "$1" || {
     echo ""
     echo "[ERROR] Commit message does not follow conventional commits format."
     echo ""

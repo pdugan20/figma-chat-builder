@@ -9,7 +9,7 @@ if [ -f "$HOME/.nvm/nvm.sh" ]; then
 fi
 
 echo "[PRE-COMMIT] Running lint-staged on staged files..."
-npx lint-staged || {
+npm run lint:staged || {
     echo "[ERROR] Lint-staged checks failed. Fix issues before committing."
     exit 1
 }
