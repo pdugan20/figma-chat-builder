@@ -33,4 +33,4 @@ npm run test:ci       # Tests with coverage (CI mode)
 - [End-to-End Flow](docs/architecture/end-to-end-flow.md) - Technical walkthrough of user inputs to Figma components
 - [Chat Building Architecture](docs/architecture/chat-building-architecture.md) - Component structure and rendering pipeline
 - [Prompt Engineering Guide](docs/architecture/prompt-engineering-guide.md) - AI prompt design and message generation
-- [Project Guide](CLAUDE.md) - Development setup, architecture, and coding guidelines
+- [Project Guide](AGENTS.md) - Development setup, architecture, and coding guidelines

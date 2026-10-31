@@ -225,7 +225,7 @@ src/
 ## Need Help?
 
 - Check existing issues or create a new one
-- Review the [Project Guide](CLAUDE.md) for detailed development info
+- Review the [Project Guide](AGENTS.md) for detailed development info
 - Read the [End-to-End Flow](docs/END_TO_END_FLOW.md) to understand the architecture
 
 ## Code of Conduct
