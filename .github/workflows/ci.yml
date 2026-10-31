@@ -24,7 +24,7 @@ jobs:
       - name: Verify dependency automation policy
         run: node --test scripts/automation-policy.test.mjs
 
-      - name: Validate CLAUDE.md
+      - name: Validate Claude configuration
         run: npx --yes claude-code-lint@0.8.0
 
       - name: Install dependencies
