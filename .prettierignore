@@ -13,7 +13,6 @@ coverage/
 
 # Cache
 .cache/
-.claudelint-cache/
 .eslintcache
 .stylelintcache
 

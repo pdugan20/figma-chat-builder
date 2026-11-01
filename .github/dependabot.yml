@@ -5,6 +5,7 @@ updates:
   # PRs while keeping commit prefixes and labels conforming for the security
   # updates Dependabot still owns.
   - package-ecosystem: 'npm'
+    cooldown: { default-days: 7 }
     directory: '/'
     schedule:
       interval: 'weekly'
@@ -28,6 +29,7 @@ updates:
       - 'pdugan20'
 
   - package-ecosystem: 'github-actions'
+    cooldown: { default-days: 14 }
     directory: '/'
     schedule:
       interval: 'weekly'

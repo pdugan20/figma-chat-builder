@@ -26,6 +26,7 @@
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "verify": "node --test scripts/automation-policy.test.mjs && npm run style:check && npm run lint:md && npm run lint && tsc --noEmit --skipLibCheck && npm run build && npm run test:ci",
     "setup-hooks": "chmod +x dev-scripts/setup-hooks.sh .githooks/pre-commit && ./dev-scripts/setup-hooks.sh",
     "knip": "knip",
     "prepare": "[ -d .git ] && git config core.hooksPath .githooks || true"
