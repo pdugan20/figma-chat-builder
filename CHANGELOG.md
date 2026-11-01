@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/pdugan20/figma-chat-builder/compare/v2.0.1...v2.0.2) (2026-11-01)
+
+
+### Bug Fixes
+
+* patch dependency security and resolve knip findings ([#128](https://github.com/pdugan20/figma-chat-builder/issues/128)) ([8a3d7c6](https://github.com/pdugan20/figma-chat-builder/commit/8a3d7c6afc385d301e8e2d14645853ec04b717e0))
+
 ## [2.0.1](https://github.com/pdugan20/figma-chat-builder/compare/v2.0.0...v2.0.1) (2026-08-15)
 
 
