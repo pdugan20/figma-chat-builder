@@ -21,6 +21,8 @@ This is a Figma plugin called "iMessage AI Chat Builder" that generates realisti
 
 ### Code Quality
 
+- `npm run verify` - Run CI checks locally: automation policy, formatting, Markdown lint, ESLint, TypeScript, production build, and tests with coverage
+
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run style:write` - Format code with Prettier
 - `npx tsc --noEmit --skipLibCheck` - Check for TypeScript type errors

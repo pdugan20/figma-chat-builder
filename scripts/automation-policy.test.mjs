@@ -57,6 +57,7 @@ updates:
   # PRs while keeping commit prefixes and labels conforming for the security
   # updates Dependabot still owns.
   - package-ecosystem: 'npm'
+    cooldown: { default-days: 7 }
     directory: '/'
     schedule:
       interval: 'weekly'
@@ -80,6 +81,7 @@ updates:
       - 'pdugan20'
 
   - package-ecosystem: 'github-actions'
+    cooldown: { default-days: 14 }
     directory: '/'
     schedule:
       interval: 'weekly'
@@ -129,7 +131,7 @@ const FORBIDDEN_RENOVATE_KEYS = [
   'prHourlyLimit',
 ];
 
-const EXPECTED_WORKFLOWS = ['ci.yml', 'pr-lint.yml', 'release.yml'];
+const EXPECTED_WORKFLOWS = ['ci.yml', 'hygiene.yml', 'pr-lint.yml', 'release.yml'];
 
 const ALTERNATE_RENOVATE_CONFIG_PATHS = [
   '.github/renovate.json',
@@ -147,25 +149,31 @@ const ALTERNATE_RENOVATE_CONFIG_PATHS = [
 ];
 
 // The only npm-adjacent run bodies workflows may execute. `npx` is allowed
-// solely for the exact-pinned Claude lint and the locally-resolved tsc.
-const APPROVED_NPX_RUN_BODIES = ['npx --yes claude-code-lint@0.8.0', 'npx tsc --noEmit --skipLibCheck'];
+// solely for the locally-resolved tsc.
+const APPROVED_NPX_RUN_BODIES = ['npx tsc --noEmit --skipLibCheck'];
 
 const PINNED_USES = /^[\w.-]+\/[\w.-]+(?:\/[\w./-]+)?@[0-9a-f]{40} # v\d+[\w.-]*$/;
 
 // The only actions any workflow may execute. A SHA pin proves immutability,
 // not identity; this list proves identity.
 const APPROVED_ACTIONS = [
+  'pdugan20/.github/.github/workflows/hygiene.yml',
   'actions/checkout',
   'actions/setup-node',
   'googleapis/release-please-action',
   'amannn/action-semantic-pull-request',
 ];
 
-// Exact per-workflow permission blocks; exactly one block per file.
+// Exact permission blocks, ordered from workflow scope to job scopes.
 const EXPECTED_PERMISSIONS = {
   'ci.yml': 'permissions:\n  contents: read\n\n',
-  'pr-lint.yml': 'permissions:\n  pull-requests: read\n\n',
-  'release.yml': 'permissions:\n  contents: write\n  pull-requests: write\n\n',
+  'hygiene.yml': 'permissions:\n  contents: read\n\n',
+  'pr-lint.yml': 'permissions:\n  contents: read\n  pull-requests: read\n\n',
+  'release.yml': [
+    'permissions:\n  contents: read\n\n',
+    '    permissions:\n      contents: write\n      pull-requests: write\n',
+    '    permissions:\n      contents: write\n',
+  ],
 };
 
 function valuesForKey(value, target, found = []) {
@@ -324,7 +332,6 @@ function usesErrors(sources) {
 const EXPECTED_RUN_BODIES = {
   'ci.yml': [
     'node --test scripts/automation-policy.test.mjs',
-    'npx --yes claude-code-lint@0.8.0',
     'npm ci',
     'npm run style:check',
     'npm run lint:md',
@@ -333,10 +340,8 @@ const EXPECTED_RUN_BODIES = {
     'npm run build',
     'npm run test:ci',
   ],
-  // SECURITY CONTROL, not tidiness: pr-lint.yml is the one workflow allowed
-  // to use pull_request_target, and checked-out untrusted PR code there is
-  // inert ONLY because no run step is permitted. Adding any entry to this
-  // list converts that exemption into a live pwn-request vector.
+  'hygiene.yml': [],
+  // PR title validation never executes repository code.
   'pr-lint.yml': [],
   'release.yml': ['npm ci', 'npm run build', 'gh release upload "$TAG_NAME" dist/plugin.js dist/ui.html --clobber'],
 };
@@ -359,11 +364,8 @@ function runBodyErrors(sources) {
       if (/NODE_OPTIONS|--require\b|self-hosted|^\s*container:/.test(line)) {
         errors.push(`${where}: forbidden execution-environment token: ${content}`);
       }
-      // pr-lint.yml's pull_request_target is the reviewed exception: it runs
-      // the base branch's definition and its token is pinned to
-      // pull-requests:read by the permissions check. Nowhere else.
-      if (name !== 'pr-lint.yml' && /pull_request_target/.test(line)) {
-        errors.push(`${where}: pull_request_target is forbidden outside pr-lint.yml`);
+      if (/pull_request_target/.test(line)) {
+        errors.push(`${where}: pull_request_target is forbidden`);
       }
       if (/--write\b|--fix\b|style:write|lint:md:fix|lint:fix/.test(line)) {
         errors.push(`${where}: CI must run checkers, not writers: ${content}`);
@@ -424,11 +426,15 @@ function permissionsErrors(name, source) {
     return [`${name}: workflow has no approved permissions block`];
   }
   const errors = [];
-  if ([...source.matchAll(/^ *permissions:/gm)].length !== 1) {
-    errors.push(`${name}: must contain exactly one permissions block`);
-  }
-  if (!source.includes(expected)) {
-    errors.push(`${name}: permissions must match the approved token scope exactly`);
+  const blocks = Array.isArray(expected) ? expected : [expected];
+  const actual = [...source.matchAll(/^([ \t]*)permissions:\n(?:\1[ \t]+[^\n]*\n)+/gm)].map(([block]) =>
+    block.trimEnd()
+  );
+  if (
+    [...source.matchAll(/^ *permissions:/gm)].length !== blocks.length ||
+    JSON.stringify(actual) !== JSON.stringify(blocks.map((block) => block.trimEnd()))
+  ) {
+    errors.push(`${name}: permissions must match the approved token scopes exactly`);
   }
   return errors;
 }
@@ -689,7 +695,7 @@ test('pr-lint.yml and release.yml permission widening fails closed', () => {
     [
       'release extra scope',
       'release.yml',
-      release.replace('  pull-requests: write\n', '  pull-requests: write\n  id-token: write\n'),
+      release.replace('      pull-requests: write\n', '      pull-requests: write\n      id-token: write\n'),
     ],
   ];
   for (const [name, file, mutation] of fixtures) {
@@ -725,4 +731,28 @@ test('ci.yml gate reordering and removal fail closed', () => {
     const errors = [...runAllowlistErrors('ci.yml', mutation), ...permissionsErrors('ci.yml', mutation)];
     assert.ok(errors.length > 0, `${name} must be rejected`);
   }
+});
+
+test('hygiene workflow keeps the reviewed reusable workflow contract', () => {
+  assert.equal(
+    read('.github/workflows/hygiene.yml'),
+    `name: Hygiene
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: \${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hygiene:
+    uses: pdugan20/.github/.github/workflows/hygiene.yml@3cf271c5735636662bfeebd8d664d26435c5dce9 # v1.1.0
+`
+  );
 });

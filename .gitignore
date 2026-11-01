@@ -122,7 +122,6 @@ web_modules/
 
 # Optional eslint cache
 .eslintcache
-.claudelint-cache/
 
 # Optional stylelint cache
 .stylelintcache
