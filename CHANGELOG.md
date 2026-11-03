@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.2](https://github.com/pdugan20/figma-chat-builder/compare/v2.0.1...v2.0.2) (2026-11-03)
+
+
+### Bug Fixes
+
+* patch dependency security and resolve knip findings ([#128](https://github.com/pdugan20/figma-chat-builder/issues/128)) ([8a3d7c6](https://github.com/pdugan20/figma-chat-builder/commit/8a3d7c6afc385d301e8e2d14645853ec04b717e0))
+* resolve open Dependabot security alerts ([#135](https://github.com/pdugan20/figma-chat-builder/issues/135)) ([0b8ee8f](https://github.com/pdugan20/figma-chat-builder/commit/0b8ee8f4359689e6e6ef963933f48bbd9d636f4e))
+
+
+### Documentation
+
+* add plugin review guidance and threat model ([#136](https://github.com/pdugan20/figma-chat-builder/issues/136)) ([12eba57](https://github.com/pdugan20/figma-chat-builder/commit/12eba57f26c9f649183f1a0eca5d43e17b7c34f5))
+
 ## [2.0.1](https://github.com/pdugan20/figma-chat-builder/compare/v2.0.0...v2.0.1) (2026-08-15)
 
 
