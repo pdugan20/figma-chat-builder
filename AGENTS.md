@@ -79,3 +79,13 @@ Layered architecture: Plugin (`src/plugin/`) &rarr; Scripts (`src/scripts/`) &ra
 - Test data mode available via `npm run watch:test` (injected at build time, no source code changes needed)
 - Chat rendering is optimized to prevent visual artifacts during assembly
 - ESLint configuration has been tuned for this codebase with appropriate rule exceptions
+
+## Code Review Rules
+
+- Flag Figma API access from the UI thread or changes to the plugin/UI `postMessage`
+  contract that lack runtime validation on both sides.
+- Flag Anthropic credentials or conversation content in console output, debug panels,
+  fixtures, exported Figma node metadata, or network destinations other than the intended
+  provider request.
+- Flag chat assembly changes that mutate the document before required components/fonts
+  are resolved or that leave a partially built conversation after failure.
