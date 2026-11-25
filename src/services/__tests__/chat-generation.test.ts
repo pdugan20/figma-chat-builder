@@ -61,6 +61,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
+        'claude-haiku-4-5',
         style,
         includePrototype,
         false,
@@ -78,7 +79,17 @@ describe('ChatGenerationService', () => {
         error: 'API key is required',
       });
 
-      await chatGenerationService.generateChat(prompt, null, style, includePrototype, false, '2', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        prompt,
+        null,
+        'claude-haiku-4-5',
+        style,
+        includePrototype,
+        false,
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith('API key is required');
       expect(mockCallbacks.onLoadingStateChange).toHaveBeenCalledWith(false);
@@ -89,6 +100,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
+        'claude-haiku-4-5',
         style,
         includePrototype,
         false,
@@ -106,6 +118,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
+        'claude-haiku-4-5',
         style,
         includePrototype,
         false,
@@ -117,6 +130,7 @@ describe('ChatGenerationService', () => {
       expect(mockApiService.generateChat).toHaveBeenCalledWith(
         prompt,
         apiKey,
+        'claude-haiku-4-5',
         '3',
         '20',
         expect.objectContaining({
@@ -133,6 +147,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
+        'claude-haiku-4-5',
         style,
         includePrototype,
         false,
@@ -152,13 +167,33 @@ describe('ChatGenerationService', () => {
     const includePrototype = false;
 
     it('should skip API key validation when using test data', async () => {
-      await chatGenerationService.generateChat(prompt, null, style, includePrototype, true, '3', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        prompt,
+        null,
+        'claude-haiku-4-5',
+        style,
+        includePrototype,
+        true,
+        '3',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockValidationService.validateApiKey).not.toHaveBeenCalled();
     });
 
     it('should call generateChatWithTestData with correct participants', async () => {
-      await chatGenerationService.generateChat(prompt, null, style, includePrototype, true, '3', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        prompt,
+        null,
+        'claude-haiku-4-5',
+        style,
+        includePrototype,
+        true,
+        '3',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockApiService.generateChatWithTestData).toHaveBeenCalledWith(
         '3',
@@ -175,22 +210,42 @@ describe('ChatGenerationService', () => {
     const chatData: ChatItem[] = [createMockChatItem({ name: 'Alice', message: 'Hello' })];
 
     it('should forward onProgress to callbacks', async () => {
-      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, streamCallbacks) => {
+      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, _____, streamCallbacks) => {
         streamCallbacks.onProgress(chatData);
       });
 
-      await chatGenerationService.generateChat('Test', 'sk-ant-key', 'light', true, false, '2', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        'Test',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        'light',
+        true,
+        false,
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockCallbacks.onStreamingStateChange).toHaveBeenCalledWith(true);
       expect(mockCallbacks.onMessagesUpdate).toHaveBeenCalledWith(chatData);
     });
 
     it('should handle onComplete and send to build', async () => {
-      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, streamCallbacks) => {
+      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, _____, streamCallbacks) => {
         streamCallbacks.onComplete(chatData);
       });
 
-      await chatGenerationService.generateChat('Test', 'sk-ant-key', 'light', true, false, '2', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        'Test',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        'light',
+        true,
+        false,
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockCallbacks.onStreamingStateChange).toHaveBeenCalledWith(false);
       expect(mockLoadingManager.onStreamComplete).toHaveBeenCalled();
@@ -199,11 +254,21 @@ describe('ChatGenerationService', () => {
     });
 
     it('should handle stream errors', async () => {
-      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, streamCallbacks) => {
+      mockApiService.generateChat = jest.fn().mockImplementation(async (_, __, ___, ____, _____, streamCallbacks) => {
         streamCallbacks.onError('Stream error');
       });
 
-      await chatGenerationService.generateChat('Test', 'sk-ant-key', 'light', true, false, '2', '15', mockCallbacks);
+      await chatGenerationService.generateChat(
+        'Test',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        'light',
+        true,
+        false,
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockCallbacks.onStreamingStateChange).toHaveBeenCalledWith(false);
       expect(mockCallbacks.onLoadingStateChange).toHaveBeenCalledWith(false);

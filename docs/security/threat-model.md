@@ -5,8 +5,10 @@ content, Figma document data, plugin storage, and document integrity. UI message
 output, selected nodes, component structure, fonts, and remote responses are untrusted.
 
 Source boundaries: `src/scripts/get-key.ts` reads Figma client storage and passes the
-credential to the plugin UI; `src/api/anthropic.ts` makes the intended provider request
-with browser SDK support. `src/services/plugin-messenger.ts` bridges UI and plugin code.
+credential and saved model choice to the plugin UI; `src/scripts/update-model.ts` stores a
+model choice after `parseModelOption` validates it. `src/api/anthropic.ts` makes the
+intended provider requests, listing models and creating messages, with browser SDK support.
+`src/services/plugin-messenger.ts` bridges UI and plugin code.
 The following are required review controls; storage is not a server-side secret boundary.
 
 Required controls:

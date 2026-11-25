@@ -8,6 +8,7 @@ import { useMessenger } from '../context/messenger';
 
 interface UseChatGenerationProps {
   anthropicKey: string;
+  model: string;
   useTestData?: boolean;
 }
 
@@ -27,6 +28,7 @@ interface UseChatGenerationReturn {
 
 export default function useChatGeneration({
   anthropicKey,
+  model,
   useTestData = false,
 }: UseChatGenerationProps): UseChatGenerationReturn {
   const [loading, setLoading] = useState(false);
@@ -79,6 +81,7 @@ export default function useChatGeneration({
       await chatService.current.generateChat(
         prompt,
         anthropicKey,
+        model,
         style,
         includePrototype,
         useTestData,
@@ -100,7 +103,7 @@ export default function useChatGeneration({
         }
       );
     },
-    [anthropicKey, useTestData]
+    [anthropicKey, model, useTestData]
   );
 
   return {

@@ -2,6 +2,7 @@ import getAnthropicKey from '../scripts/get-key';
 import loadFonts from '../scripts/load-fonts';
 import { checkIfHasLibrary, checkIfHasLocalComponents } from '../scripts/check-components';
 import updateAnthropicKey from '../scripts/update-key';
+import updateAnthropicModel from '../scripts/update-model';
 import notifyUser from '../scripts/api-error';
 import buildChatUserInterface from '../scripts/build-chat-ui';
 import cleanAndParseJson from '../utils/json';
@@ -32,6 +33,10 @@ figma.ui.onmessage = (msg) => {
   switch (msg.type) {
     case MESSAGE_TYPE.UPDATE_ANTHROPIC_KEY:
       updateAnthropicKey(msg.apiKey);
+      break;
+
+    case MESSAGE_TYPE.UPDATE_ANTHROPIC_MODEL:
+      updateAnthropicModel(msg.model);
       break;
 
     case MESSAGE_TYPE.BUILD_CHAT_UI:

@@ -22,6 +22,7 @@ export class ChatGenerationService {
   async generateChat(
     prompt: string,
     apiKey: string | null,
+    model: string,
     style: string,
     includePrototype: boolean,
     useTestData: boolean,
@@ -69,7 +70,7 @@ export class ChatGenerationService {
       if (useTestData) {
         await this.apiService.generateChatWithTestData(participants, streamCallbacks);
       } else {
-        await this.apiService.generateChat(prompt, apiKey || '', participants, maxMessages, streamCallbacks);
+        await this.apiService.generateChat(prompt, apiKey || '', model, participants, maxMessages, streamCallbacks);
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Generation failed';

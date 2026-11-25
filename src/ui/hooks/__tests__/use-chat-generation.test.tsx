@@ -31,7 +31,7 @@ describe('useChatGeneration', () => {
   });
 
   it('should initialize with default state', () => {
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key' }), {
+    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
       wrapper,
     });
 
@@ -45,11 +45,11 @@ describe('useChatGeneration', () => {
   it('should set loading state when generating', async () => {
     mockChatService.generateChat = jest
       .fn()
-      .mockImplementation(async (_, __, ___, ____, _____, ______, _______, callbacks) => {
+      .mockImplementation(async (_, __, ___, ____, _____, ______, _______, ________, callbacks) => {
         callbacks.onLoadingStateChange(true);
       });
 
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key' }), {
+    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
       wrapper,
     });
 
@@ -67,7 +67,7 @@ describe('useChatGeneration', () => {
   });
 
   it('should clear streaming messages on new generation', async () => {
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key' }), {
+    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
       wrapper,
     });
 
@@ -76,7 +76,7 @@ describe('useChatGeneration', () => {
       const createMockChatItem = (await import('../../../test/test-helpers')).default;
       mockChatService.generateChat = jest
         .fn()
-        .mockImplementation(async (_, __, ___, ____, _____, ______, _______, callbacks) => {
+        .mockImplementation(async (_, __, ___, ____, _____, ______, _______, ________, callbacks) => {
           callbacks.onMessagesUpdate([createMockChatItem({ name: 'Alice', message: 'First' })]);
         });
 
@@ -109,7 +109,7 @@ describe('useChatGeneration', () => {
   it('should update streaming messages when onMessagesUpdate is called', async () => {
     mockChatService.generateChat = jest
       .fn()
-      .mockImplementation(async (_, __, ___, ____, _____, ______, _______, callbacks) => {
+      .mockImplementation(async (_, __, ___, ____, _____, ______, _______, ________, callbacks) => {
         const createMockChatItem = (await import('../../../test/test-helpers')).default;
         callbacks.onMessagesUpdate([
           createMockChatItem({ name: 'Alice', message: 'Hello' }),
@@ -117,7 +117,7 @@ describe('useChatGeneration', () => {
         ]);
       });
 
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key' }), {
+    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
       wrapper,
     });
 
@@ -135,9 +135,12 @@ describe('useChatGeneration', () => {
   });
 
   it('should pass correct parameters to ChatGenerationService', async () => {
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-test-key', useTestData: true }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useChatGeneration({ anthropicKey: 'sk-ant-test-key', model: 'claude-haiku-4-5', useTestData: true }),
+      {
+        wrapper,
+      }
+    );
 
     await act(async () => {
       await result.current.generateChat({
@@ -152,6 +155,7 @@ describe('useChatGeneration', () => {
     expect(mockChatService.generateChat).toHaveBeenCalledWith(
       'Test prompt for chat',
       'sk-ant-test-key',
+      'claude-haiku-4-5',
       'dark',
       false,
       true, // useTestData

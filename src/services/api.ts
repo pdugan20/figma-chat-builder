@@ -17,6 +17,7 @@ export class APIService {
   async generateChat(
     prompt: string,
     apiKey: string,
+    model: string,
     participants: string,
     maxMessages: string,
     callbacks: StreamCallbacks
@@ -26,6 +27,7 @@ export class APIService {
     try {
       const response = await createChatQuery({
         apiKey,
+        model,
         queryInputs: { prompt, participants, maxMessages },
         onStream: (chunk: string) => {
           this.handleStreamChunk(chunk, callbacks);

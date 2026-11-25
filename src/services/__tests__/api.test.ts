@@ -34,7 +34,14 @@ describe('APIService', () => {
       };
       (createChatQuery as jest.Mock).mockResolvedValue(mockResponse);
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       // Fast-forward timers to flush buffer
       jest.runAllTimers();
@@ -42,6 +49,7 @@ describe('APIService', () => {
 
       expect(createChatQuery).toHaveBeenCalledWith({
         apiKey: 'sk-ant-key',
+        model: 'claude-haiku-4-5',
         queryInputs: { prompt: 'Test prompt', participants: '2', maxMessages: '15' },
         onStream: expect.any(Function),
       });
@@ -62,7 +70,14 @@ describe('APIService', () => {
         return Promise.resolve(mockResponse);
       });
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       // Simulate streaming chunks
       if (onStreamCallback) {
@@ -85,7 +100,7 @@ describe('APIService', () => {
       const error = new Error('API request failed');
       (createChatQuery as jest.Mock).mockRejectedValue(error);
 
-      await apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      await apiService.generateChat('Test prompt', 'sk-ant-key', 'claude-haiku-4-5', '2', '15', mockCallbacks);
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith('API request failed');
     });
@@ -93,7 +108,14 @@ describe('APIService', () => {
     it('should handle missing response content', async () => {
       (createChatQuery as jest.Mock).mockResolvedValue({});
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
       jest.runAllTimers();
       await promise;
 
@@ -112,7 +134,14 @@ describe('APIService', () => {
         return Promise.resolve(mockResponse);
       });
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       // Simulate multiple chunks arriving quickly
       if (onStreamCallback) {
@@ -158,7 +187,14 @@ describe('APIService', () => {
       };
       (createChatQuery as jest.Mock).mockResolvedValue(mockResponse);
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
       jest.runAllTimers();
       await promise;
 
@@ -179,13 +215,27 @@ describe('APIService', () => {
       });
 
       // Start first generation and trigger a stream chunk to create a buffer timeout
-      const promise1 = apiService.generateChat('First prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise1 = apiService.generateChat(
+        'First prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
       if (onStreamCallback) {
         onStreamCallback('partial');
       }
 
       // Start second generation before buffer timeout fires (resets buffer)
-      const promise2 = apiService.generateChat('Second prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise2 = apiService.generateChat(
+        'Second prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       jest.runAllTimers();
       await promise1;
@@ -206,7 +256,14 @@ describe('APIService', () => {
         return Promise.resolve(mockResponse);
       });
 
-      const promise = apiService.generateChat('Test prompt', 'sk-ant-key', '2', '15', mockCallbacks);
+      const promise = apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        'claude-haiku-4-5',
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       // Simulate complete JSON in one chunk
       if (onStreamCallback) {

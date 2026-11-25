@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Link } from 'figma-kit';
+import { Text, Link, Select } from 'figma-kit';
 import Navigation from '../navigation';
 import UpdateKeyDialog from '../components/dialogs/update-key';
 import { useAnthropic } from '../context/anthropic';
@@ -18,7 +18,7 @@ function SettingsScreen({
   pluginVersion = PLUGIN_VERSION,
   showDebug = false,
 }: SettingsScreenProps): React.JSX.Element {
-  const { anthropicKey } = useAnthropic();
+  const { anthropicKey, model, availableModels, selectModel } = useAnthropic();
 
   function renderNav(): React.JSX.Element {
     return <Navigation screen={screen} />;
@@ -52,11 +52,29 @@ function SettingsScreen({
     );
   }
 
+  function renderModelBody(): React.JSX.Element {
+    if (availableModels.length === 0) {
+      return <Text>{model.displayName}</Text>;
+    }
+    return (
+      <Select.Root value={model.id} onValueChange={selectModel}>
+        <Select.Trigger />
+        <Select.Content>
+          {availableModels.map((option) => (
+            <Select.Item key={option.id} value={option.id}>
+              {option.displayName}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Root>
+    );
+  }
+
   function renderModel(): React.JSX.Element {
     return (
       <div className='row-item'>
         <Text className='heading'>Model</Text>
-        <Text>Claude Haiku 4.5</Text>
+        {renderModelBody()}
       </div>
     );
   }

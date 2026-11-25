@@ -27,8 +27,16 @@ function delay(ms: number): Promise<void> {
   });
 }
 
+function createClient(apiKey: string): Anthropic {
+  return new Anthropic({
+    apiKey,
+    dangerouslyAllowBrowser: true,
+  });
+}
+
 async function attemptRequest(
   anthropic: Anthropic,
+  model: string,
   queryInputs: QueryInputs,
   onStream?: (chunk: string) => void
 ): Promise<QueryResponse> {
@@ -37,9 +45,8 @@ async function attemptRequest(
   const completeResponse: AnthropicMessage[] = [];
 
   const stream = await anthropic.messages.create({
-    model: API_CONSTANTS.CLAUDE_MODEL,
+    model,
     max_tokens: API_CONSTANTS.MAX_TOKENS,
-    temperature: API_CONSTANTS.TEMPERATURE,
     stream: true,
     system: API_CONSTANTS.SYSTEM_MESSAGE,
     messages: [
@@ -99,7 +106,7 @@ async function attemptRequest(
     id: 'streamed-response',
     type: 'message',
     role: 'assistant',
-    model: API_CONSTANTS.CLAUDE_MODEL,
+    model,
     content: [{ type: 'text', text: rawResponse }],
   };
 
@@ -108,12 +115,13 @@ async function attemptRequest(
 
 async function retryWithDelay(
   anthropic: Anthropic,
+  model: string,
   queryInputs: QueryInputs,
   onStream?: (chunk: string) => void,
   attempt = 0
 ): Promise<QueryResponse> {
   try {
-    return await attemptRequest(anthropic, queryInputs, onStream);
+    return await attemptRequest(anthropic, model, queryInputs, onStream);
   } catch (error) {
     const isOverloaded =
       (error instanceof Error && error.message.includes('overloaded_error')) ||
@@ -121,7 +129,7 @@ async function retryWithDelay(
 
     if (isOverloaded && attempt < API_CONSTANTS.MAX_RETRIES - 1) {
       await delay(API_CONSTANTS.RETRY_DELAY);
-      return retryWithDelay(anthropic, queryInputs, onStream, attempt + 1);
+      return retryWithDelay(anthropic, model, queryInputs, onStream, attempt + 1);
     }
 
     const errorDetails = handleAnthropicError(error as AnthropicError);
@@ -129,12 +137,22 @@ async function retryWithDelay(
   }
 }
 
+export async function listActiveModels(apiKey: string): Promise<Anthropic.ModelInfo[]> {
+  const models: Anthropic.ModelInfo[] = [];
+  for await (const model of createClient(apiKey).models.list({ lifecycle: ['active'] })) {
+    models.push(model);
+  }
+  return models;
+}
+
 export default async function createChatQuery({
   apiKey,
+  model,
   queryInputs,
   onStream,
 }: {
   apiKey: string;
+  model: string;
   queryInputs: QueryInputs;
   onStream?: (chunk: string) => void;
 }): Promise<QueryResponse> {
@@ -142,10 +160,5 @@ export default async function createChatQuery({
     throw new Error('API key is required');
   }
 
-  const anthropic = new Anthropic({
-    apiKey,
-    dangerouslyAllowBrowser: true,
-  });
-
-  return retryWithDelay(anthropic, queryInputs, onStream);
+  return retryWithDelay(createClient(apiKey), model, queryInputs, onStream);
 }

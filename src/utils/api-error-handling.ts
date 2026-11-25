@@ -62,7 +62,7 @@ const handleAnthropicError = (error: AnthropicError): ErrorDetails => {
       default:
         // Sanitize error message to remove technical details like model names
         const rawMessage = error.error.error.message || 'An error occurred';
-        const sanitizedMessage = rawMessage.replace(/claude-[0-9]+-[a-z]+-[0-9-]+/gi, 'the AI model');
+        const sanitizedMessage = rawMessage.replace(/claude-[a-z0-9-]+/gi, 'the AI model');
         errorDetails = {
           type: error.error.error.type,
           message: sanitizedMessage,
