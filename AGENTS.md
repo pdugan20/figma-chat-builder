@@ -41,6 +41,8 @@ ESLint only checks code style/quality rules, NOT TypeScript type errors. You mus
 - `npm run test:watch` - Run tests in watch mode
 - `npm test -- <test-file>` - Run a specific test file
 
+`src/ui/__tests__/built-ui.test.ts` loads `dist/ui.html`, so run `npm run build` before `npm test`. CI and `npm run verify` build first.
+
 ### Version Management
 
 Versioning is automated via [release-please](https://github.com/googleapis/release-please). On push to `main`, release-please creates a Release PR based on conventional commits. Merging that PR bumps the version in `package.json` and `src/constants/plugin.ts`, creates a git tag, generates a CHANGELOG entry, and creates a GitHub Release with build artifacts.
