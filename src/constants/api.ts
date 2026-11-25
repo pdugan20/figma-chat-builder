@@ -5,6 +5,8 @@ import { ModelOption } from '../types/api';
 const FALLBACK_MODEL: ModelOption = { id: 'claude-haiku-4-5', displayName: 'Claude Haiku 4.5' };
 // Without a saved choice, the plugin uses the newest active model in this line.
 const DEFAULT_MODEL_LINE: Anthropic.ModelLine = 'haiku';
+// Lines offered in Settings. New models in these lines appear without a plugin update.
+const OFFERED_MODEL_LINES: Anthropic.ModelLine[] = ['haiku', 'sonnet'];
 const MAX_TOKENS = 2000;
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000; // 2 seconds
@@ -31,6 +33,7 @@ Conversation style rules:
 export default {
   FALLBACK_MODEL,
   DEFAULT_MODEL_LINE,
+  OFFERED_MODEL_LINES,
   MAX_TOKENS,
   MAX_RETRIES,
   RETRY_DELAY,

@@ -1,5 +1,5 @@
 import type Anthropic from '@anthropic-ai/sdk';
-import { chooseModel, parseModelOption } from '../models';
+import { chooseModel, filterOfferedModels, parseModelOption } from '../models';
 import API_CONSTANTS from '../../constants/api';
 
 function createModelInfo(id: string, line: Anthropic.ModelLine | null): Anthropic.ModelInfo {
@@ -31,6 +31,24 @@ describe('parseModelOption', () => {
     ['an oversized id', { id: 'c'.repeat(101), displayName: 'Claude Haiku 5' }],
   ])('rejects %s', (_, value) => {
     expect(parseModelOption(value)).toBeNull();
+  });
+});
+
+describe('filterOfferedModels', () => {
+  it('keeps only the Haiku and Sonnet lines', () => {
+    const activeModels = [
+      createModelInfo('claude-opus-5', 'opus'),
+      createModelInfo('claude-sonnet-5', 'sonnet'),
+      createModelInfo('claude-fable-5', 'fable'),
+      createModelInfo('claude-custom', null),
+      createModelInfo('claude-haiku-5', 'haiku'),
+    ];
+    expect(filterOfferedModels(activeModels).map((model) => model.id)).toEqual(['claude-sonnet-5', 'claude-haiku-5']);
+  });
+
+  it('keeps every active model when none are in the offered lines', () => {
+    const activeModels = [createModelInfo('claude-opus-5', 'opus'), createModelInfo('claude-custom', null)];
+    expect(filterOfferedModels(activeModels)).toEqual(activeModels);
   });
 });
 

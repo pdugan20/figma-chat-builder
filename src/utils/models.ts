@@ -24,6 +24,14 @@ export function toModelOption(model: Anthropic.ModelInfo): ModelOption {
   return { id: model.id, displayName: model.display_name };
 }
 
+// Keeps the offered lines, or every active model if Anthropic stops using those lines.
+export function filterOfferedModels(activeModels: Anthropic.ModelInfo[]): Anthropic.ModelInfo[] {
+  const offeredModels = activeModels.filter(
+    (model) => model.line !== null && API_CONSTANTS.OFFERED_MODEL_LINES.includes(model.line)
+  );
+  return offeredModels.length > 0 ? offeredModels : activeModels;
+}
+
 // Keeps the saved model while it is still active for this key. Otherwise picks the newest
 // model in the default line; the Models API lists newer models first.
 export function chooseModel(activeModels: Anthropic.ModelInfo[], savedModel: ModelOption | null): ModelOption {

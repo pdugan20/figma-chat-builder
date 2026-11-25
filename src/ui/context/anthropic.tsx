@@ -3,7 +3,7 @@ import type Anthropic from '@anthropic-ai/sdk';
 import { listActiveModels } from '../../api/anthropic';
 import { MESSAGE_TYPE } from '../../constants/messages';
 import { ModelOption } from '../../types/api';
-import { chooseModel, parseModelOption, toModelOption } from '../../utils/models';
+import { chooseModel, filterOfferedModels, parseModelOption, toModelOption } from '../../utils/models';
 
 interface AnthropicContextType {
   anthropicKey: string | null;
@@ -59,7 +59,7 @@ export function AnthropicProvider({ children }: { children: ReactNode }) {
     listActiveModels(anthropicKey)
       .then((models) => {
         if (isCurrentKey) {
-          setActiveModels(models);
+          setActiveModels(filterOfferedModels(models));
         }
       })
       .catch(() => {
