@@ -1,3 +1,4 @@
+import API_CONSTANTS from '../../../constants/api';
 import { ReactNode } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import useChatGeneration from '../use-chat-generation';
@@ -31,9 +32,12 @@ describe('useChatGeneration', () => {
   });
 
   it('should initialize with default state', () => {
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useChatGeneration({ anthropicKey: 'sk-ant-key', model: API_CONSTANTS.FALLBACK_MODEL }),
+      {
+        wrapper,
+      }
+    );
 
     expect(result.current.loading).toBe(false);
     expect(result.current.streaming).toBe(false);
@@ -49,9 +53,12 @@ describe('useChatGeneration', () => {
         callbacks.onLoadingStateChange(true);
       });
 
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useChatGeneration({ anthropicKey: 'sk-ant-key', model: API_CONSTANTS.FALLBACK_MODEL }),
+      {
+        wrapper,
+      }
+    );
 
     await act(async () => {
       await result.current.generateChat({
@@ -67,9 +74,12 @@ describe('useChatGeneration', () => {
   });
 
   it('should clear streaming messages on new generation', async () => {
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useChatGeneration({ anthropicKey: 'sk-ant-key', model: API_CONSTANTS.FALLBACK_MODEL }),
+      {
+        wrapper,
+      }
+    );
 
     // Set initial streaming messages
     await act(async () => {
@@ -117,9 +127,12 @@ describe('useChatGeneration', () => {
         ]);
       });
 
-    const { result } = renderHook(() => useChatGeneration({ anthropicKey: 'sk-ant-key', model: 'claude-haiku-4-5' }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useChatGeneration({ anthropicKey: 'sk-ant-key', model: API_CONSTANTS.FALLBACK_MODEL }),
+      {
+        wrapper,
+      }
+    );
 
     await act(async () => {
       await result.current.generateChat({
@@ -136,7 +149,8 @@ describe('useChatGeneration', () => {
 
   it('should pass correct parameters to ChatGenerationService', async () => {
     const { result } = renderHook(
-      () => useChatGeneration({ anthropicKey: 'sk-ant-test-key', model: 'claude-haiku-4-5', useTestData: true }),
+      () =>
+        useChatGeneration({ anthropicKey: 'sk-ant-test-key', model: API_CONSTANTS.FALLBACK_MODEL, useTestData: true }),
       {
         wrapper,
       }
@@ -155,7 +169,7 @@ describe('useChatGeneration', () => {
     expect(mockChatService.generateChat).toHaveBeenCalledWith(
       'Test prompt for chat',
       'sk-ant-test-key',
-      'claude-haiku-4-5',
+      API_CONSTANTS.FALLBACK_MODEL,
       'dark',
       false,
       true, // useTestData

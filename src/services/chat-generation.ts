@@ -1,4 +1,5 @@
 import { ChatItem } from '../types/chat';
+import { ModelOption } from '../types/api';
 import { APIService, StreamCallbacks } from './api';
 import ValidationService from './validation';
 import { PluginMessengerService } from './plugin-messenger';
@@ -22,7 +23,7 @@ export class ChatGenerationService {
   async generateChat(
     prompt: string,
     apiKey: string | null,
-    model: string,
+    model: ModelOption,
     style: string,
     includePrototype: boolean,
     useTestData: boolean,

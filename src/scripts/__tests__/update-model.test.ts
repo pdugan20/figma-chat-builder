@@ -12,8 +12,12 @@ describe('updateAnthropicModel', () => {
   });
 
   it('saves a valid model', async () => {
-    await updateAnthropicModel({ id: 'claude-haiku-5', displayName: 'Claude Haiku 5' });
-    expect(setAsync).toHaveBeenCalledWith('anthropicModel', { id: 'claude-haiku-5', displayName: 'Claude Haiku 5' });
+    await updateAnthropicModel({ id: 'claude-haiku-5', displayName: 'Claude Haiku 5', supportsLowEffort: true });
+    expect(setAsync).toHaveBeenCalledWith('anthropicModel', {
+      id: 'claude-haiku-5',
+      displayName: 'Claude Haiku 5',
+      supportsLowEffort: true,
+    });
   });
 
   it('ignores an invalid model', async () => {

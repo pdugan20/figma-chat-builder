@@ -113,7 +113,7 @@ describe('AnthropicProvider model selection', () => {
       {
         pluginMessage: {
           type: MESSAGE_TYPE.UPDATE_ANTHROPIC_MODEL,
-          model: { id: 'claude-sonnet-5', displayName: 'Claude Sonnet 5' },
+          model: { id: 'claude-sonnet-5', displayName: 'Claude Sonnet 5', supportsLowEffort: false },
         },
       },
       '*'

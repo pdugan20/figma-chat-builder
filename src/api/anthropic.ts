@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { QueryInputs, QueryResponse } from '../types/api';
+import { ModelOption, QueryInputs, QueryResponse } from '../types/api';
 import { getExamplePrompt, getInstructionsPrompt } from '../utils/prompts';
 import handleAnthropicError from '../utils/api-error-handling';
 import API_CONSTANTS from '../constants/api';
@@ -36,7 +36,7 @@ function createClient(apiKey: string): Anthropic {
 
 async function attemptRequest(
   anthropic: Anthropic,
-  model: string,
+  model: ModelOption,
   queryInputs: QueryInputs,
   onStream?: (chunk: string) => void
 ): Promise<QueryResponse> {
@@ -45,8 +45,9 @@ async function attemptRequest(
   const completeResponse: AnthropicMessage[] = [];
 
   const stream = await anthropic.messages.create({
-    model,
+    model: model.id,
     max_tokens: API_CONSTANTS.MAX_TOKENS,
+    ...(model.supportsLowEffort && { output_config: { effort: API_CONSTANTS.EFFORT } }),
     stream: true,
     system: API_CONSTANTS.SYSTEM_MESSAGE,
     messages: [
@@ -106,7 +107,7 @@ async function attemptRequest(
     id: 'streamed-response',
     type: 'message',
     role: 'assistant',
-    model,
+    model: model.id,
     content: [{ type: 'text', text: rawResponse }],
   };
 
@@ -115,7 +116,7 @@ async function attemptRequest(
 
 async function retryWithDelay(
   anthropic: Anthropic,
-  model: string,
+  model: ModelOption,
   queryInputs: QueryInputs,
   onStream?: (chunk: string) => void,
   attempt = 0
@@ -152,7 +153,7 @@ export default async function createChatQuery({
   onStream,
 }: {
   apiKey: string;
-  model: string;
+  model: ModelOption;
   queryInputs: QueryInputs;
   onStream?: (chunk: string) => void;
 }): Promise<QueryResponse> {

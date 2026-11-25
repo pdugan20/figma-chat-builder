@@ -38,7 +38,7 @@ function PluginScreen({
   } = usePlugin();
   const { loading, streaming, streamingMessages, generateChat } = useChatGeneration({
     anthropicKey: anthropicKey || '',
-    model: model.id,
+    model,
     useTestData,
   });
   const [style, setStyle] = useState(defaultStyle);

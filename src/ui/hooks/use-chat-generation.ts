@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { ChatItem } from '../../types/chat';
+import { ModelOption } from '../../types/api';
 import { ChatGenerationService } from '../../services/chat-generation';
 import { APIService } from '../../services/api';
 import ValidationService from '../../services/validation';
@@ -8,7 +9,7 @@ import { useMessenger } from '../context/messenger';
 
 interface UseChatGenerationProps {
   anthropicKey: string;
-  model: string;
+  model: ModelOption;
   useTestData?: boolean;
 }
 

@@ -1,3 +1,4 @@
+import API_CONSTANTS from '../../constants/api';
 import { APIService, StreamCallbacks } from '../api';
 import createChatQuery from '../../api/anthropic';
 import { ChatItem } from '../../types/chat';
@@ -37,7 +38,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -49,7 +50,7 @@ describe('APIService', () => {
 
       expect(createChatQuery).toHaveBeenCalledWith({
         apiKey: 'sk-ant-key',
-        model: 'claude-haiku-4-5',
+        model: API_CONSTANTS.FALLBACK_MODEL,
         queryInputs: { prompt: 'Test prompt', participants: '2', maxMessages: '15' },
         onStream: expect.any(Function),
       });
@@ -73,7 +74,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -100,7 +101,14 @@ describe('APIService', () => {
       const error = new Error('API request failed');
       (createChatQuery as jest.Mock).mockRejectedValue(error);
 
-      await apiService.generateChat('Test prompt', 'sk-ant-key', 'claude-haiku-4-5', '2', '15', mockCallbacks);
+      await apiService.generateChat(
+        'Test prompt',
+        'sk-ant-key',
+        API_CONSTANTS.FALLBACK_MODEL,
+        '2',
+        '15',
+        mockCallbacks
+      );
 
       expect(mockCallbacks.onError).toHaveBeenCalledWith('API request failed');
     });
@@ -111,7 +119,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -137,7 +145,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -190,7 +198,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -218,7 +226,7 @@ describe('APIService', () => {
       const promise1 = apiService.generateChat(
         'First prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -231,7 +239,7 @@ describe('APIService', () => {
       const promise2 = apiService.generateChat(
         'Second prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks
@@ -259,7 +267,7 @@ describe('APIService', () => {
       const promise = apiService.generateChat(
         'Test prompt',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '2',
         '15',
         mockCallbacks

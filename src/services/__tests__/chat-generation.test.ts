@@ -1,3 +1,4 @@
+import API_CONSTANTS from '../../constants/api';
 import { ChatGenerationService, GenerationCallbacks } from '../chat-generation';
 import { APIService } from '../api';
 import ValidationService from '../validation';
@@ -61,7 +62,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         false,
@@ -82,7 +83,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         null,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         false,
@@ -100,7 +101,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         false,
@@ -118,7 +119,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         false,
@@ -130,7 +131,7 @@ describe('ChatGenerationService', () => {
       expect(mockApiService.generateChat).toHaveBeenCalledWith(
         prompt,
         apiKey,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         '3',
         '20',
         expect.objectContaining({
@@ -147,7 +148,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         apiKey,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         false,
@@ -170,7 +171,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         null,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         true,
@@ -186,7 +187,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         prompt,
         null,
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         style,
         includePrototype,
         true,
@@ -217,7 +218,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         'Test',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         'light',
         true,
         false,
@@ -238,7 +239,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         'Test',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         'light',
         true,
         false,
@@ -261,7 +262,7 @@ describe('ChatGenerationService', () => {
       await chatGenerationService.generateChat(
         'Test',
         'sk-ant-key',
-        'claude-haiku-4-5',
+        API_CONSTANTS.FALLBACK_MODEL,
         'light',
         true,
         false,
