@@ -6,6 +6,7 @@ import { useAnthropic } from '../context/anthropic';
 import URLS from '../../constants/urls';
 import PLUGIN_VERSION from '../../constants/plugin';
 import { MESSAGE_TYPE } from '../../constants/messages';
+import maskApiKey from '../../utils/api-key';
 
 interface SettingsScreenProps {
   screen?: string;
@@ -26,9 +27,9 @@ function SettingsScreen({
 
   function renderKeyBody(): React.JSX.Element {
     if (!anthropicKey) {
-      return <UpdateKeyDialog dialogTitle='Add key' anthropicKey='' />;
+      return <UpdateKeyDialog dialogTitle='Add key' />;
     }
-    return <Text className='subtitle truncated'>{anthropicKey}</Text>;
+    return <Text className='subtitle truncated'>{maskApiKey(anthropicKey)}</Text>;
   }
 
   function renderKey(): React.JSX.Element {
@@ -36,7 +37,7 @@ function SettingsScreen({
       <div className='row-item'>
         <div className='heading-parent'>
           <Text className='heading'>Anthropic API key</Text>
-          {anthropicKey && <UpdateKeyDialog dialogTitle='Edit key' actionLabel='Edit' anthropicKey={anthropicKey} />}
+          {anthropicKey && <UpdateKeyDialog dialogTitle='Edit key' actionLabel='Edit' />}
         </div>
         {renderKeyBody()}
       </div>

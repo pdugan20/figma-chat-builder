@@ -7,7 +7,6 @@ interface UpdateKeyDialogProps {
   dialogTitle: string;
   dialogDescription?: string;
   actionLabel?: string;
-  anthropicKey: string;
   keyLength?: number;
   buttonVariant?: 'link' | 'primary';
 }
@@ -16,11 +15,11 @@ function UpdateKeyDialog({
   dialogTitle,
   dialogDescription = 'Enter your Anthropic API key.',
   actionLabel = 'Add key',
-  anthropicKey,
   keyLength = 108,
   buttonVariant = 'link',
 }: UpdateKeyDialogProps): React.JSX.Element {
-  const [apiKey, setKey] = useState(anthropicKey);
+  // Starts empty so the saved key never appears in the field.
+  const [apiKey, setKey] = useState('');
   const [keyIsValid, setKeyIsValid] = useState(false);
 
   function handleInputChange({ updatedKey }: { updatedKey: HandleInputChangeProps['updatedKey'] }): void {
@@ -43,7 +42,7 @@ function UpdateKeyDialog({
   }
 
   const handleCancelClick = () => {
-    setKey(anthropicKey);
+    setKey('');
     setKeyIsValid(false);
   };
 

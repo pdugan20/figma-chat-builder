@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, Link, AlertDialog } from 'figma-kit';
 import UpdateKeyDialog from '../dialogs/update-key';
-import { useAnthropic } from '../../context/anthropic';
 import AnthropicLogo from '../logos/anthropic';
 
 interface ApiKeyOverlayProps {
@@ -9,8 +8,6 @@ interface ApiKeyOverlayProps {
 }
 
 function ApiKeyOverlay({ showLogo = false }: ApiKeyOverlayProps): React.JSX.Element {
-  const { anthropicKey } = useAnthropic();
-
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-[var(--figma-color-bg)]'>
       <div className='flex flex-col items-center px-4 text-center'>
@@ -25,12 +22,7 @@ function ApiKeyOverlay({ showLogo = false }: ApiKeyOverlayProps): React.JSX.Elem
           </Link>
         </div>
         <AlertDialog.Root>
-          <UpdateKeyDialog
-            dialogTitle='Add key'
-            anthropicKey={anthropicKey || ''}
-            actionLabel='Add key'
-            buttonVariant='primary'
-          />
+          <UpdateKeyDialog dialogTitle='Add key' actionLabel='Add key' buttonVariant='primary' />
         </AlertDialog.Root>
       </div>
     </div>
