@@ -32,12 +32,13 @@ function PluginScreen({
   defaultPrompt = '',
   useTestData = false,
 }: PluginScreenProps): React.JSX.Element | null {
-  const { anthropicKey, isLoading: isAnthropicLoading } = useAnthropic();
+  const { anthropicKey, model, isLoading: isAnthropicLoading } = useAnthropic();
   const {
     state: { hasComponentLibrary, hasLocalComponents, isLoading: isPluginLoading, hasFonts },
   } = usePlugin();
   const { loading, streaming, streamingMessages, generateChat } = useChatGeneration({
     anthropicKey: anthropicKey || '',
+    model,
     useTestData,
   });
   const [style, setStyle] = useState(defaultStyle);

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, Link } from 'figma-kit';
+import { Text, Link, Select } from 'figma-kit';
 import Navigation from '../navigation';
 import UpdateKeyDialog from '../components/dialogs/update-key';
 import { useAnthropic } from '../context/anthropic';
 import URLS from '../../constants/urls';
 import PLUGIN_VERSION from '../../constants/plugin';
 import { MESSAGE_TYPE } from '../../constants/messages';
+import maskApiKey from '../../utils/api-key';
 
 interface SettingsScreenProps {
   screen?: string;
@@ -18,7 +19,7 @@ function SettingsScreen({
   pluginVersion = PLUGIN_VERSION,
   showDebug = false,
 }: SettingsScreenProps): React.JSX.Element {
-  const { anthropicKey } = useAnthropic();
+  const { anthropicKey, model, availableModels, selectModel } = useAnthropic();
 
   function renderNav(): React.JSX.Element {
     return <Navigation screen={screen} />;
@@ -26,9 +27,9 @@ function SettingsScreen({
 
   function renderKeyBody(): React.JSX.Element {
     if (!anthropicKey) {
-      return <UpdateKeyDialog dialogTitle='Add key' anthropicKey='' />;
+      return <UpdateKeyDialog dialogTitle='Add key' />;
     }
-    return <Text className='subtitle truncated'>{anthropicKey}</Text>;
+    return <Text className='subtitle truncated'>{maskApiKey(anthropicKey)}</Text>;
   }
 
   function renderKey(): React.JSX.Element {
@@ -36,7 +37,7 @@ function SettingsScreen({
       <div className='row-item'>
         <div className='heading-parent'>
           <Text className='heading'>Anthropic API key</Text>
-          {anthropicKey && <UpdateKeyDialog dialogTitle='Edit key' actionLabel='Edit' anthropicKey={anthropicKey} />}
+          {anthropicKey && <UpdateKeyDialog dialogTitle='Edit key' actionLabel='Edit' />}
         </div>
         {renderKeyBody()}
       </div>
@@ -52,11 +53,29 @@ function SettingsScreen({
     );
   }
 
+  function renderModelBody(): React.JSX.Element {
+    if (availableModels.length === 0) {
+      return <Text>{model.displayName}</Text>;
+    }
+    return (
+      <Select.Root value={model.id} onValueChange={selectModel}>
+        <Select.Trigger />
+        <Select.Content>
+          {availableModels.map((option) => (
+            <Select.Item key={option.id} value={option.id}>
+              {option.displayName}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Root>
+    );
+  }
+
   function renderModel(): React.JSX.Element {
     return (
       <div className='row-item'>
         <Text className='heading'>Model</Text>
-        <Text>Claude Haiku 4.5</Text>
+        {renderModelBody()}
       </div>
     );
   }

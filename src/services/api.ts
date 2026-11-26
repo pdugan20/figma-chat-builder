@@ -1,4 +1,5 @@
 import { ChatItem } from '../types/chat';
+import { ModelOption } from '../types/api';
 import createChatQuery from '../api/anthropic';
 import { CHAT_DATA_2, CHAT_DATA_3, CHAT_DATA_4 } from '../constants/test-data';
 
@@ -17,6 +18,7 @@ export class APIService {
   async generateChat(
     prompt: string,
     apiKey: string,
+    model: ModelOption,
     participants: string,
     maxMessages: string,
     callbacks: StreamCallbacks
@@ -26,6 +28,7 @@ export class APIService {
     try {
       const response = await createChatQuery({
         apiKey,
+        model,
         queryInputs: { prompt, participants, maxMessages },
         onStream: (chunk: string) => {
           this.handleStreamChunk(chunk, callbacks);

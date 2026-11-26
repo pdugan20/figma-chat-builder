@@ -1,4 +1,5 @@
 import { ChatItem } from '../types/chat';
+import { ModelOption } from '../types/api';
 import { APIService, StreamCallbacks } from './api';
 import ValidationService from './validation';
 import { PluginMessengerService } from './plugin-messenger';
@@ -22,6 +23,7 @@ export class ChatGenerationService {
   async generateChat(
     prompt: string,
     apiKey: string | null,
+    model: ModelOption,
     style: string,
     includePrototype: boolean,
     useTestData: boolean,
@@ -69,7 +71,7 @@ export class ChatGenerationService {
       if (useTestData) {
         await this.apiService.generateChatWithTestData(participants, streamCallbacks);
       } else {
-        await this.apiService.generateChat(prompt, apiKey || '', participants, maxMessages, streamCallbacks);
+        await this.apiService.generateChat(prompt, apiKey || '', model, participants, maxMessages, streamCallbacks);
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Generation failed';

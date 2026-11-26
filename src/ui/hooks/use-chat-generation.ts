@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { ChatItem } from '../../types/chat';
+import { ModelOption } from '../../types/api';
 import { ChatGenerationService } from '../../services/chat-generation';
 import { APIService } from '../../services/api';
 import ValidationService from '../../services/validation';
@@ -8,6 +9,7 @@ import { useMessenger } from '../context/messenger';
 
 interface UseChatGenerationProps {
   anthropicKey: string;
+  model: ModelOption;
   useTestData?: boolean;
 }
 
@@ -27,6 +29,7 @@ interface UseChatGenerationReturn {
 
 export default function useChatGeneration({
   anthropicKey,
+  model,
   useTestData = false,
 }: UseChatGenerationProps): UseChatGenerationReturn {
   const [loading, setLoading] = useState(false);
@@ -79,6 +82,7 @@ export default function useChatGeneration({
       await chatService.current.generateChat(
         prompt,
         anthropicKey,
+        model,
         style,
         includePrototype,
         useTestData,
@@ -100,7 +104,7 @@ export default function useChatGeneration({
         }
       );
     },
-    [anthropicKey, useTestData]
+    [anthropicKey, model, useTestData]
   );
 
   return {

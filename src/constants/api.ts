@@ -1,6 +1,20 @@
-const CLAUDE_MODEL = 'claude-haiku-4-5';
-const MAX_TOKENS = 2000;
-const TEMPERATURE = 0.5;
+import type Anthropic from '@anthropic-ai/sdk';
+import { ModelOption } from '../types/api';
+
+// Used until the Models API responds, or when it can't be reached and no model was saved.
+const FALLBACK_MODEL: ModelOption = {
+  id: 'claude-haiku-4-5',
+  displayName: 'Claude Haiku 4.5',
+  supportsLowEffort: false,
+};
+// Without a saved choice, the plugin uses the newest active model in this line.
+const DEFAULT_MODEL_LINE: Anthropic.ModelLine = 'haiku';
+// Lines offered in Settings. New models in these lines appear without a plugin update.
+const OFFERED_MODEL_LINES: Anthropic.ModelLine[] = ['haiku', 'sonnet'];
+// Thinking tokens count toward this limit, and Claude 5 models think by default.
+const MAX_TOKENS = 8000;
+// Chats are short and simple, so models that support effort run at the cheapest level.
+const EFFORT: Anthropic.OutputConfig['effort'] = 'low';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000; // 2 seconds
 const SYSTEM_MESSAGE = `You generate realistic iMessage conversations as JSON arrays for rendering as visual mockups in Figma. Structural accuracy is critical because the output is parsed directly into UI components.
@@ -24,9 +38,11 @@ Conversation style rules:
 - Use emoji reactions sparingly (2-4 total per conversation)`;
 
 export default {
-  CLAUDE_MODEL,
+  FALLBACK_MODEL,
+  DEFAULT_MODEL_LINE,
+  OFFERED_MODEL_LINES,
   MAX_TOKENS,
-  TEMPERATURE,
+  EFFORT,
   MAX_RETRIES,
   RETRY_DELAY,
   SYSTEM_MESSAGE,

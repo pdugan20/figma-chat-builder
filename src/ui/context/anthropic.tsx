@@ -1,9 +1,17 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
+import type Anthropic from '@anthropic-ai/sdk';
+import { listActiveModels } from '../../api/anthropic';
+import { MESSAGE_TYPE } from '../../constants/messages';
+import { ModelOption } from '../../types/api';
+import { chooseModel, filterOfferedModels, parseModelOption, toModelOption } from '../../utils/models';
 
 interface AnthropicContextType {
   anthropicKey: string | null;
   setAnthropicKey: (key: string | null) => void;
   isLoading: boolean;
+  model: ModelOption;
+  availableModels: ModelOption[];
+  selectModel: (modelId: string) => void;
 }
 
 const AnthropicContext = createContext<AnthropicContextType | undefined>(undefined);
@@ -11,6 +19,8 @@ const AnthropicContext = createContext<AnthropicContextType | undefined>(undefin
 export function AnthropicProvider({ children }: { children: ReactNode }) {
   const [anthropicKey, setAnthropicKey] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [savedModel, setSavedModel] = useState<ModelOption | null>(null);
+  const [activeModels, setActiveModels] = useState<Anthropic.ModelInfo[]>([]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -21,6 +31,7 @@ export function AnthropicProvider({ children }: { children: ReactNode }) {
           if (event.data.pluginMessage.hasKey) {
             setAnthropicKey(event.data.pluginMessage.key);
           }
+          setSavedModel(parseModelOption(event.data.pluginMessage.model));
           setIsLoading(false);
           break;
 
@@ -39,7 +50,54 @@ export function AnthropicProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const value = useMemo(() => ({ anthropicKey, setAnthropicKey, isLoading }), [anthropicKey, isLoading]);
+  useEffect(() => {
+    if (!anthropicKey) {
+      return undefined;
+    }
+
+    let isCurrentKey = true;
+    listActiveModels(anthropicKey)
+      .then((models) => {
+        if (isCurrentKey) {
+          setActiveModels(filterOfferedModels(models));
+        }
+      })
+      .catch(() => {
+        // Generation still works with the saved or fallback model.
+        if (isCurrentKey) {
+          setActiveModels([]);
+        }
+      });
+
+    return () => {
+      isCurrentKey = false;
+    };
+  }, [anthropicKey]);
+
+  const selectModel = useCallback(
+    (modelId: string) => {
+      const selected = activeModels.find((model) => model.id === modelId);
+      if (!selected) {
+        return;
+      }
+      const option = toModelOption(selected);
+      setSavedModel(option);
+      parent.postMessage({ pluginMessage: { type: MESSAGE_TYPE.UPDATE_ANTHROPIC_MODEL, model: option } }, '*');
+    },
+    [activeModels]
+  );
+
+  const value = useMemo(
+    () => ({
+      anthropicKey,
+      setAnthropicKey,
+      isLoading,
+      model: chooseModel(activeModels, savedModel),
+      availableModels: activeModels.map(toModelOption),
+      selectModel,
+    }),
+    [anthropicKey, isLoading, activeModels, savedModel, selectModel]
+  );
 
   return <AnthropicContext.Provider value={value}>{children}</AnthropicContext.Provider>;
 }
